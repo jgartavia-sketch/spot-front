@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+</head>
+<body>
+  <h2>Acceso Administrador</h2>
+
+  <form id="loginForm">
+    <input type="text" id="usuario" placeholder="Usuario" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <p id="msg"></p>
+
+  <script>
+    console.log("🔥 LOGIN ADMIN CARGADO");
+
+    // ⭐ API ONLINE en RENDER (NO localhost)
+    const API = "https://spot-backend-hdft.onrender.com/api";
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      console.log("👉 SUBMIT DETECTADO");
+
+      const usuario = document.getElementById("usuario").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const msg = document.getElementById("msg");
+
+      try {
+        const res = await fetch(`${API}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usuario, password })
+        });
+
+        const data = await res.json();
+        console.log("📩 RESPUESTA:", data);
+
+        if (!data.ok) {
+          msg.textContent = "Credenciales incorrectas";
+          msg.style.color = "red";
+          return;
+        }
+
+        // Guardar token
+        localStorage.setItem("token", data.token);
+        console.log("🔑 TOKEN GUARDADO:", data.token);
+
+        // Redirigir al dashboard
+        window.location.href = "dashboard.html";
+
+      } catch (error) {
+        console.log("❌ ERROR:", error);
+        msg.textContent = "No se pudo conectar al servidor";
+        msg.style.color = "red";
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Admin — El Spot Orgánico</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5fff5;
+    }
+
+    h1 { color: #1a6e32; }
+
+    /* CONTADORES */
+    #resumen {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #1a6e32;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #e4ffe8;
+    }
+
+    button {
+      padding: 6px 12px;
+      cursor: pointer;
+      border: none;
+      background: #1a6e32;
+      color: white;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background: #145427;
+    }
+
+    .estado-pendiente {
+      background: #fff4c2;
+      color: #7a5d00;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+
+    .estado-revisada {
+      background: #d4ffd8;
+      color: #0f6b24;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+
+    #paginacion {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* MODAL ELIMINAR */
+    #modalEliminar {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    #modalEliminar .modal-content {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    #modalEliminar h3 {
+      margin-bottom: 10px;
+    }
+
+    #modalEliminar p {
+      margin-bottom: 20px;
+    }
+
+    #modalEliminar .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .btn-danger {
+      background: #b30000;
+    }
+
+    .btn-secondary {
+      background: #666;
+    }
+  </style>
+
+</head>
+<body>
+
+  <h1>Panel Administrativo</h1>
+  <h3 id="bienvenida"></h3>
+
+  <!-- CONTADORES -->
+  <div id="resumen">
+    <span id="total">Total: 0</span>
+    <span id="pendientes">Pendientes: 0</span>
+    <span id="revisadas">Revisadas: 0</span>
+  </div>
+
+  <hr>
+
+  <!-- FILTROS AVANZADOS -->
+  <div style="margin-bottom: 20px">
+    <!-- ESTADO -->
+    <label>Estado:</label>
+    <select id="filtroEstado">
+      <option value="">Todos</option>
+      <option value="pendiente">Pendientes</option>
+      <option value="revisada">Revisadas</option>
+    </select>
+
+    <!-- BUSCADOR -->
+    <label style="margin-left: 20px;">Buscar (nombre/correo/motivo):</label>
+    <input type="text" id="busqueda" placeholder="Ej: Juan, gmail, corte..." />
+
+    <!-- RANGO DE FECHAS -->
+    <label style="margin-left: 20px;">Desde:</label>
+    <input type="date" id="fechaInicio">
+
+    <label>Hasta:</label>
+    <input type="date" id="fechaFin">
+
+    <button onclick="aplicarFiltros()">Aplicar</button>
+    <button onclick="limpiarFiltros()">Limpiar</button>
+    <button onclick="exportarExcel()">Exportar a Excel</button>
+  </div>
+
+  <!-- PAGINACIÓN -->
+  <div id="paginacion">
+    <button onclick="paginaAnterior()">Anterior</button>
+    <span id="infoPagina">Página 1</span>
+    <button onclick="paginaSiguiente()">Siguiente</button>
+  </div>
+
+  <!-- TABLA RESERVAS -->
+  <table id="tablaReservas">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Motivo</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- MODAL ELIMINAR -->
+  <div id="modalEliminar">
+    <div class="modal-content">
+      <h3>Eliminar reserva</h3>
+      <p>¿Seguro que querés eliminar esta reserva? Esta acción es permanente.</p>
+      <div class="actions">
+        <button id="btnCancelarEliminar" class="btn-secondary">Cancelar</button>
+        <button id="btnConfirmarEliminar" class="btn-danger">Eliminar</button>
+      </div>
+    </div>
+  </div>
+<script>
+  const BASE_URL = "https://spot-backend-hdft.onrender.com/api";
+</script>
+
+  <script src="admin.js"></script>
+
+
+
+</body>
+</html>
