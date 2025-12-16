@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("👉 Enviando reserva al backend ONLINE...", payload);
 
       try {
-        const res = await fetch("https://spot-backend-hdft.onrender.com/api/reservar", {
+        const res = await fetch("https://spot-backend-hdft.onrender.com/api/reservas", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
