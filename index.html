@@ -124,6 +124,7 @@
     <p>Plantas, abonos, macetas y más.</p>
 
     <div class="productos-grid">
+
       <article class="prod-card fade-up">
         <div class="card-media">
           <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800&q=80" alt="Plantas ornamentales">
@@ -133,7 +134,7 @@
           <p>Variedades nativas y de vivero.</p>
           <div class="card-actions">
             <a href="#productos" class="btn-outline">Ver</a>
-            <a href="#contacto" class="btn">Comprar</a>
+            <button type="button" class="btn comprar-btn" data-producto="Plantas ornamentales">Comprar</button>
           </div>
         </div>
       </article>
@@ -147,7 +148,7 @@
           <p>Mezclas orgánicas y naturales.</p>
           <div class="card-actions">
             <a href="#productos" class="btn-outline">Ver</a>
-            <a href="#contacto" class="btn">Comprar</a>
+            <button type="button" class="btn comprar-btn" data-producto="Sustratos & Abonos">Comprar</button>
           </div>
         </div>
       </article>
@@ -161,14 +162,13 @@
           <p>Todo para empezar tu huerto.</p>
           <div class="card-actions">
             <a href="#productos" class="btn-outline">Ver</a>
-            <a href="#contacto" class="btn">Comprar</a>
+            <button type="button" class="btn comprar-btn" data-producto="Kits de jardinería">Comprar</button>
           </div>
         </div>
       </article>
+
     </div>
   </section>
-  ...
-</section>
 
   <!-- ESO ACADEMY -->
   <section id="academy" class="section academy-section" data-feature="disabled">
@@ -194,47 +194,11 @@
         <a class="btn-outline small" href="#academy">Leer más</a>
       </article>
     </div>
-
-    <!-- ENCUESTA -->
-    <div class="academy-interact">
-      <div class="poll fade-up">
-        <h4>¿Qué tema querés la próxima semana?</h4>
-        <div class="poll-options">
-          <button class="poll-btn" data-value="sustratos">Sustratos</button>
-          <button class="poll-btn" data-value="riego">Riego</button>
-          <button class="poll-btn" data-value="plagas">Plagas</button>
-        </div>
-        <div id="poll-result"></div>
-      </div>
-
-      <!-- QUIZ -->
-      <div class="quiz fade-up">
-        <h4>Mini-quiz: ¿Qué planta sos?</h4>
-        <div id="quiz-area">
-          <p>1) Preferís sol o sombra?</p>
-          <button class="quiz-btn" data-answer="sol">Sol</button>
-          <button class="quiz-btn" data-answer="sombra">Sombra</button>
-        </div>
-        <div id="quiz-result"></div>
-      </div>
-    </div>
-
-    <!-- COMENTARIOS -->
-    <div class="academy-comments fade-up">
-      <h4>Dejá tu experiencia</h4>
-      <form id="comment-form">
-        <input type="text" id="comment-name" placeholder="Tu nombre" required />
-        <textarea id="comment-text" placeholder="Tu comentario" required></textarea>
-        <button class="btn" type="submit">Enviar</button>
-      </form>
-      <div id="comments-list"></div>
-    </div>
   </section>
 
   <!-- GALERÍA -->
   <section id="galeria" class="section">
     <h2>Galería</h2>
-
     <div class="masonry-grid">
       <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=900&q=80"></div>
       <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&q=80"></div>
@@ -250,7 +214,6 @@
     <h2>Contacto y Reservas</h2>
     <p>Escribinos para reservar camping, tours o pedir información.</p>
 
-    <!-- FORMULARIO CORREGIDO -->
     <form class="contact-form" id="contact-form">
       <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
       <input type="email" id="correo" name="correo" placeholder="Tu correo" required>
@@ -264,39 +227,14 @@
         <option value="producto">Comprar producto</option>
       </select>
 
-      <!-- FECHA OBLIGATORIA -->
       <label style="margin-top:5px;font-weight:600;color:#1a6e32;">Fecha de la reserva *</label>
       <input type="date" id="fecha" name="fecha" required>
 
-      <div id="campingFields" style="display:none;">
-        <h4>Datos Camping</h4>
-        <input type="date" id="campingEntrada">
-        <input type="date" id="campingSalida">
-        <input type="number" id="campingPersonas" min="1" placeholder="Personas">
-      </div>
-
-      <div id="tourFields" style="display:none;">
-        <h4>Datos Tour</h4>
-        <input type="date" id="tourFecha">
-        <input type="number" id="tourPersonas" min="1" placeholder="Personas">
-      </div>
-
       <textarea id="mensaje" placeholder="Tu mensaje"></textarea>
-
       <button type="submit" class="btn">Enviar</button>
     </form>
 
-    <p id="mensaje-exito" class="mensaje-exito" style="
-      margin-top:15px;
-      padding:10px 15px;
-      background:#e0ffe6;
-      border:1px solid #30a04a;
-      color:#066022;
-      border-radius:6px;
-      font-weight:600;
-      display:none;">Reserva enviada con éxito</p>
-
-    <p class="whatsapp">También podés escribirnos por WhatsApp al <strong>+506 62964881</strong>.</p>
+    <p id="mensaje-exito" class="mensaje-exito" style="display:none;">Reserva enviada con éxito</p>
   </section>
 
   <!-- FOOTER -->
@@ -306,29 +244,9 @@
         <h3>El Spot Orgánico</h3>
         <p>Naturaleza, educación y turismo sostenible.</p>
       </div>
-
-      <div class="footer-links">
-        <h4>Contacto</h4>
-        <p>Tel: +506 62964881</p>
-        <p>Email: info@elspotorganico.cr</p>
-      </div>
-
-      <div class="social">
-        <h4>Síguenos</h4>
-        <div class="social-icons">
-          <a href="https://www.instagram.com" target="_blank" aria-label="Instagram">IG</a>
-          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook">FB</a>
-          <a href="https://wa.me/50662964881" target="_blank" aria-label="WhatsApp">WA</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <small>© <span id="year"></span> El Spot Orgánico — Hecho con cariño en el pueblo.</small>
     </div>
   </footer>
 
   <script src="script.js" defer></script>
-
 </body>
 </html>

@@ -24,33 +24,60 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- CONTACT / RESERVAS FORM ---------- */
   const form = document.getElementById('contact-form');
 
+  const motivo = document.getElementById('motivo');
+  const campingFields = document.getElementById('campingFields');
+  const tourFields = document.getElementById('tourFields');
+
+  // Show/hide conditional fields
+  if (motivo) {
+    motivo.addEventListener('change', (e) => {
+      const v = e.target.value;
+      if (campingFields) campingFields.style.display = (v === 'camping') ? 'block' : 'none';
+      if (tourFields) tourFields.style.display = (v === 'tour') ? 'block' : 'none';
+    });
+  }
+
+  /* ---------- 🛒 BOTÓN COMPRAR (OPCIÓN A) ---------- */
+  const comprarBtns = document.querySelectorAll('.comprar-btn');
+
+  comprarBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const producto = btn.dataset.producto || 'Producto';
+
+      // Seleccionar motivo "producto"
+      if (motivo) motivo.value = 'producto';
+
+      // Escribir mensaje automático
+      const mensajeEl = document.getElementById('mensaje');
+      if (mensajeEl) {
+        mensajeEl.value = `Quiero comprar el producto: ${producto}`;
+      }
+
+      // Ocultar campos que no aplican
+      if (campingFields) campingFields.style.display = 'none';
+      if (tourFields) tourFields.style.display = 'none';
+
+      // Scroll suave al formulario
+      const contactoSection = document.getElementById('contacto');
+      if (contactoSection) {
+        contactoSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  // ------------ SUBMIT FORM + BACKEND ONLINE ------------ //
   if (form) {
-    const motivo = document.getElementById('motivo');
-    const campingFields = document.getElementById('campingFields');
-    const tourFields = document.getElementById('tourFields');
-
-    // Show/hide conditional fields
-    if (motivo) {
-      motivo.addEventListener('change', (e) => {
-        const v = e.target.value;
-        campingFields.style.display = (v === 'camping') ? 'block' : 'none';
-        tourFields.style.display = (v === 'tour') ? 'block' : 'none';
-      });
-    }
-
-    // ------------ SUBMIT FORM + BACKEND ONLINE ------------ //
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const payload = {
-  nombre: document.getElementById('nombre').value.trim(),
-  correo: document.getElementById('correo').value.trim(),
-  telefono: document.getElementById('telefono').value.trim(),
-  motivo: document.getElementById('motivo').value,
-  mensaje: document.getElementById('mensaje').value.trim(),
-  fecha: document.getElementById('fecha').value.trim() // 👈 ESTE ES CLAVE
-};
-
+        nombre: document.getElementById('nombre').value.trim(),
+        correo: document.getElementById('correo').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
+        motivo: motivo ? motivo.value : '',
+        mensaje: document.getElementById('mensaje').value.trim(),
+        fecha: document.getElementById('fecha').value.trim()
+      };
 
       console.log("👉 Enviando reserva al backend ONLINE...", payload);
 
@@ -68,8 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (data.ok) {
           form.reset();
-          campingFields.style.display = 'none';
-          tourFields.style.display = 'none';
+          if (campingFields) campingFields.style.display = 'none';
+          if (tourFields) tourFields.style.display = 'none';
         }
 
       } catch (err) {
@@ -86,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderPoll() {
     const stored = localStorage.getItem(POLL_KEY);
-    pollResult.textContent = stored ? `Gracias. Vos votaste: ${stored}` : '';
+    if (pollResult) pollResult.textContent = stored ? `Gracias. Vos votaste: ${stored}` : '';
   }
 
   renderPoll();
@@ -99,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ---------- QUIZ (simple) ---------- */
+  /* ---------- QUIZ ---------- */
   const quizArea = document.getElementById('quiz-area');
   const quizResult = document.getElementById('quiz-result');
 
@@ -113,11 +140,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (ans === 'sol') res = 'Eres una Planta de Sol — energética y vivaz!';
       if (ans === 'sombra') res = 'Eres una Planta de Sombra — paciente y constante.';
 
-      quizResult.textContent = res;
+      if (quizResult) quizResult.textContent = res;
     });
   }
 
-  /* ---------- COMMENTS (localStorage) ---------- */
+  /* ---------- COMMENTS ---------- */
   const commentForm = document.getElementById('comment-form');
   const commentsList = document.getElementById('comments-list');
   const COMMENTS_KEY = 'eso_comments_v1';
@@ -176,11 +203,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderComments();
 
-  /* ---------- LIGHTBOX simple para gallery ---------- */
+  /* ---------- LIGHTBOX ---------- */
   const masonryImgs = document.querySelectorAll('.masonry-item img');
 
   if (masonryImgs.length) {
-
     const modal = document.createElement('div');
     modal.id = 'lightbox-modal';
     modal.style.cssText =
