@@ -11,12 +11,19 @@ let totalPaginas = 1;
 let idReservaAEliminar = null;
 
 // ===============================
-// AUTH
+// AUTH / SESIÓN (PASO 3.3.1)
 // ===============================
+function logoutForzado(mensaje = "Sesión inválida. Inicia sesión nuevamente.") {
+  alert(mensaje);
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.href = "/admin/login.html";
+}
+
 function obtenerToken() {
   const token = localStorage.getItem("token");
   if (!token) {
-    window.location.href = "/admin/login.html";
+    logoutForzado("No hay sesión activa.");
     return null;
   }
   return token;
@@ -44,6 +51,12 @@ async function cargarReservas(page = 1) {
       }
     );
 
+    // 👉 NUEVO: token vencido
+    if (res.status === 401) {
+      logoutForzado("Tu sesión expiró.");
+      return;
+    }
+
     const data = await res.json();
 
     if (!res.ok || !data.ok) {
@@ -52,7 +65,9 @@ async function cargarReservas(page = 1) {
 
     const reservas = data.data || [];
 
+    // ===============================
     // CONTADORES
+    // ===============================
     document.getElementById("total").textContent = `Total: ${reservas.length}`;
     document.getElementById("pendientes").textContent =
       `Pendientes: ${reservas.filter(r => r.estado === "pendiente").length}`;
@@ -119,6 +134,11 @@ async function marcarRevisada(id) {
       }
     );
 
+    if (res.status === 401) {
+      logoutForzado("Tu sesión expiró.");
+      return;
+    }
+
     const data = await res.json();
     if (!data.ok) throw new Error();
 
@@ -157,6 +177,11 @@ async function eliminarReserva() {
       }
     );
 
+    if (res.status === 401) {
+      logoutForzado("Tu sesión expiró.");
+      return;
+    }
+
     const data = await res.json();
     if (!data.ok) throw new Error();
 
@@ -180,12 +205,10 @@ function paginaSiguiente() {
 }
 
 // ===============================
-// LOGOUT
+// LOGOUT MANUAL
 // ===============================
 document.getElementById("logoutBtn")?.addEventListener("click", () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  window.location.href = "/admin/login.html";
+  logoutForzado("Sesión cerrada.");
 });
 
 // ===============================
