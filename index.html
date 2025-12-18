@@ -5,248 +5,153 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>El Spot Orgánico</title>
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ===== CARRITO LATERAL ===== */
+    .cart-panel {
+      position: fixed;
+      top: 0;
+      left: -360px;
+      width: 360px;
+      height: 100%;
+      background: #ffffff;
+      box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+      padding: 20px;
+      transition: left 0.3s ease;
+      z-index: 9999;
+      overflow-y: auto;
+    }
+
+    .cart-panel.open {
+      left: 0;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .cart-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .cart-item button {
+      background: none;
+      border: none;
+      color: #c0392b;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .cart-footer {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .cart-close {
+      cursor: pointer;
+      font-size: 18px;
+    }
+  </style>
 </head>
+
 <body>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <h1 class="logo">El Spot Orgánico</h1>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#camping">Camping</a></li>
-        <li><a href="#tours">Tours</a></li>
-        <li><a href="#productos">Productos</a></li>
-        <li><a href="#academy">ESO Academy</a></li>
-        <li><a href="#galeria">Galería</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-      </ul>
-    </nav>
-  </header>
+<!-- ===== CARRITO ===== -->
+<aside id="cartPanel" class="cart-panel">
+  <div class="cart-header">
+    <h3>🛒 Tu carrito</h3>
+    <span class="cart-close" onclick="toggleCart()">✕</span>
+  </div>
 
-  <!-- HERO -->
-  <section id="inicio" class="hero hero-camping">
-    <div class="hero-overlay">
-      <div class="hero-text">
-        <h2>Vení a dormir bajo las estrellas</h2>
-        <p>Camping sustentable, experiencias guiadas y conexión real con la comunidad.</p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="#camping">Reservar Camping</a>
-          <a class="btn btn-secondary" href="#tours">Ver Tours</a>
+  <div id="cartItems"></div>
+
+  <div class="cart-footer">
+    Total: ₡<span id="cartTotal">0</span>
+    <br><br>
+    <button class="btn" style="width:100%">Finalizar compra</button>
+  </div>
+</aside>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <h1 class="logo">El Spot Orgánico</h1>
+</header>
+
+<!-- PRODUCTOS -->
+<section id="productos" class="section">
+  <h2>Productos</h2>
+  <p>Plantas, abonos, macetas y más.</p>
+
+  <div class="productos-grid">
+
+    <article class="prod-card">
+      <h3>Plantas ornamentales</h3>
+      <button class="btn comprar-btn" data-producto="Plantas ornamentales" data-precio="3500">Comprar</button>
+    </article>
+
+    <article class="prod-card">
+      <h3>Sustratos & Abonos</h3>
+      <button class="btn comprar-btn" data-producto="Sustratos & Abonos" data-precio="4200">Comprar</button>
+    </article>
+
+    <article class="prod-card">
+      <h3>Kits de jardinería</h3>
+      <button class="btn comprar-btn" data-producto="Kits de jardinería" data-precio="6500">Comprar</button>
+    </article>
+
+  </div>
+</section>
+
+<script>
+  /* ===== LÓGICA DE TIENDA ===== */
+  let carrito = [];
+
+  function toggleCart() {
+    document.getElementById("cartPanel").classList.toggle("open");
+  }
+
+  function renderCart() {
+    const contenedor = document.getElementById("cartItems");
+    const totalEl = document.getElementById("cartTotal");
+    contenedor.innerHTML = "";
+
+    let total = 0;
+
+    carrito.forEach((item, index) => {
+      total += item.precio;
+      contenedor.innerHTML += `
+        <div class="cart-item">
+          <strong>${item.nombre}</strong><br>
+          ₡${item.precio}
+          <br>
+          <button onclick="removeItem(${index})">Eliminar</button>
         </div>
-      </div>
-    </div>
-  </section>
+      `;
+    });
 
-  <!-- CAMPING -->
-  <section id="camping" class="section feature-section">
-    <h2>Camping — Experiencia Principal</h2>
-    <p>Vení a vivir una noche única: fogata, senderos guiados y desayuno con productos locales.</p>
+    totalEl.textContent = total;
+  }
 
-    <div class="feature-grid">
-      <article class="feature-card fade-up">
-        <div class="feature-media">
-          <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1200&q=80" alt="Camping noche">
-        </div>
-        <div class="feature-body">
-          <h3>Camping Nocturno</h3>
-          <p>Zona segura, baños ecológicos y puntos para fogata.</p>
-          <div class="feature-meta">Desde ₡8,000 / noche</div>
-          <a class="btn" href="#contacto">Reservar</a>
-        </div>
-      </article>
+  function removeItem(index) {
+    carrito.splice(index, 1);
+    renderCart();
+  }
 
-      <article class="feature-card fade-up">
-        <div class="feature-media">
-          <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?w=1200&q=80" alt="Campamento con vista">
-        </div>
-        <div class="feature-body">
-          <h3>Camping Eco-Comfort</h3>
-          <p>Glamping ligero: colchonetas, kit desayuno y guía nocturna.</p>
-          <div class="feature-meta">Desde ₡12,000 / noche</div>
-          <a class="btn" href="#contacto">Reservar</a>
-        </div>
-      </article>
+  document.querySelectorAll(".comprar-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const producto = btn.dataset.producto;
+      const precio = Number(btn.dataset.precio);
 
-      <article class="feature-card fade-up">
-        <div class="feature-media">
-          <img src="https://images.unsplash.com/photo-1526779259212-39e2f3f9b8bf?w=1200&q=80" alt="Desayuno local">
-        </div>
-        <div class="feature-body">
-          <h3>Experiencia Completa</h3>
-          <p>Noche, tour educativo al amanecer y desayuno local.</p>
-          <div class="feature-meta">Paquete desde ₡18,000</div>
-          <a class="btn" href="#contacto">Reservar Paquete</a>
-        </div>
-      </article>
-    </div>
-  </section>
+      carrito.push({ nombre: producto, precio });
+      renderCart();
+      toggleCart();
+    });
+  });
+</script>
 
-  <!-- TOURS -->
-  <section id="tours" class="section">
-    <h2>Tours Educativos</h2>
-    <p>Recorridos dentro y fuera de la propiedad.</p>
-
-    <div class="productos-grid">
-      <article class="prod-card fade-up">
-        <div class="card-media">
-          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=80" alt="Tour sendero">
-        </div>
-        <div class="card-body">
-          <h3>Tour Sendero Educativo</h3>
-          <p>1.5h de recorrido con guía local.</p>
-          <div class="card-actions">
-            <a class="btn-outline" href="#tours">Ver</a>
-            <a class="btn" href="#contacto">Reservar</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="prod-card fade-up">
-        <div class="card-media">
-          <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80" alt="Tour externo">
-        </div>
-        <div class="card-body">
-          <h3>Tour Externo (Comunidad)</h3>
-          <p>Impacto real en la economía del pueblo.</p>
-          <div class="card-actions">
-            <a class="btn-outline" href="#tours">Ver</a>
-            <a class="btn" href="#contacto">Reservar</a>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- PRODUCTOS -->
-  <section id="productos" class="section">
-    <h2>Productos</h2>
-    <p>Plantas, abonos, macetas y más.</p>
-
-    <div class="productos-grid">
-
-      <article class="prod-card fade-up">
-        <div class="card-media">
-          <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800&q=80" alt="Plantas ornamentales">
-        </div>
-        <div class="card-body">
-          <h3>Plantas ornamentales</h3>
-          <p>Variedades nativas y de vivero.</p>
-          <div class="card-actions">
-            <a href="#productos" class="btn-outline">Ver</a>
-            <button type="button" class="btn comprar-btn" data-producto="Plantas ornamentales">Comprar</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="prod-card fade-up">
-        <div class="card-media">
-          <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=800&q=80" alt="Sustratos y abonos">
-        </div>
-        <div class="card-body">
-          <h3>Sustratos & Abonos</h3>
-          <p>Mezclas orgánicas y naturales.</p>
-          <div class="card-actions">
-            <a href="#productos" class="btn-outline">Ver</a>
-            <button type="button" class="btn comprar-btn" data-producto="Sustratos & Abonos">Comprar</button>
-          </div>
-        </div>
-      </article>
-
-      <article class="prod-card fade-up">
-        <div class="card-media">
-          <img src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800&q=80" alt="Kit de jardinería">
-        </div>
-        <div class="card-body">
-          <h3>Kits de jardinería</h3>
-          <p>Todo para empezar tu huerto.</p>
-          <div class="card-actions">
-            <a href="#productos" class="btn-outline">Ver</a>
-            <button type="button" class="btn comprar-btn" data-producto="Kits de jardinería">Comprar</button>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </section>
-
-  <!-- ESO ACADEMY -->
-  <section id="academy" class="section academy-section" data-feature="disabled">
-    <h2>ESO Academy</h2>
-    <p>Aprendé sobre sostenibilidad.</p>
-
-    <div class="academy-grid">
-      <article class="academy-card fade-up">
-        <h3>Cómo preparar sustrato orgánico</h3>
-        <p>Guía rápida para un sustrato nutritivo.</p>
-        <a class="btn-outline small" href="#academy">Leer más</a>
-      </article>
-
-      <article class="academy-card fade-up">
-        <h3>Riego responsable</h3>
-        <p>Técnicas para ahorrar agua.</p>
-        <a class="btn-outline small" href="#academy">Leer más</a>
-      </article>
-
-      <article class="academy-card fade-up">
-        <h3>Plagas y soluciones naturales</h3>
-        <p>Métodos ecológicos para proteger tus plantas.</p>
-        <a class="btn-outline small" href="#academy">Leer más</a>
-      </article>
-    </div>
-  </section>
-
-  <!-- GALERÍA -->
-  <section id="galeria" class="section">
-    <h2>Galería</h2>
-    <div class="masonry-grid">
-      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=900&q=80"></div>
-      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&q=80"></div>
-      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=900&q=80"></div>
-      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=900&q=80"></div>
-      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&q=80"></div>
-      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=900&q=80"></div>
-    </div>
-  </section>
-
-  <!-- CONTACTO -->
-  <section id="contacto" class="section">
-    <h2>Contacto y Reservas</h2>
-    <p>Escribinos para reservar camping, tours o pedir información.</p>
-
-    <form class="contact-form" id="contact-form">
-      <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
-      <input type="email" id="correo" name="correo" placeholder="Tu correo" required>
-      <input type="tel" id="telefono" name="telefono" placeholder="Tu teléfono (opcional)">
-
-      <select id="motivo" name="motivo" required>
-        <option value="">Seleccionar...</option>
-        <option value="info">Solicitar información</option>
-        <option value="camping">Reservar Camping</option>
-        <option value="tour">Reservar Tour</option>
-        <option value="producto">Comprar producto</option>
-      </select>
-
-      <label style="margin-top:5px;font-weight:600;color:#1a6e32;">Fecha de la reserva *</label>
-      <input type="date" id="fecha" name="fecha" required>
-
-      <textarea id="mensaje" placeholder="Tu mensaje"></textarea>
-      <button type="submit" class="btn">Enviar</button>
-    </form>
-
-    <p id="mensaje-exito" class="mensaje-exito" style="display:none;">Reserva enviada con éxito</p>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="brand">
-        <h3>El Spot Orgánico</h3>
-        <p>Naturaleza, educación y turismo sostenible.</p>
-      </div>
-    </div>
-  </footer>
-
-  <script src="script.js" defer></script>
 </body>
 </html>
