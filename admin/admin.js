@@ -1,218 +1,136 @@
-console.log("ADMIN.JS CARGÓ CORRECTAMENTE");
+// ESO/admin/admin.js
+console.log("ADMIN DASHBOARD CARGADO");
+
+const BACKEND_URL = "https://spot-backend-hdft.onrender.com/api";
 
 // ===============================
-// CONFIG
-// ===============================
-document.addEventListener("DOMContentLoaded", async () => {
-  // tu código aquí...
-});
-
-// ===============================
-// VARIABLES DE PAGINACIÓN
+// ESTADO GLOBAL
 // ===============================
 let paginaActual = 1;
 let totalPaginas = 1;
-
-// ID temporal para modal de eliminación
 let idReservaAEliminar = null;
 
 // ===============================
-// VERIFICAR TOKEN
+// AUTH
 // ===============================
-function verificarToken() {
+function obtenerToken() {
   const token = localStorage.getItem("token");
-
   if (!token) {
-    window.location.href = "login.html";
+    window.location.href = "/admin/login.html";
     return null;
   }
-
   return token;
-}
-
-// ===============================
-// LOGIN ADMIN
-// ===============================
-async function iniciarLogin(e) {
-  e.preventDefault();
-
-  const usuario = document.getElementById("usuario").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const msg = document.getElementById("msg");
-
-  try {
-    const res = await fetch(`${BASE_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usuario, password })
-    });
-
-    const data = await res.json();
-
-    if (!data.ok) {
-      msg.textContent = "Credenciales incorrectas";
-      msg.style.color = "red";
-      return;
-    }
-
-    localStorage.setItem("token", data.token);
-    window.location.href = "dashboard.html";
-
-  } catch (err) {
-    console.error(err);
-    msg.textContent = "Error conectando al servidor";
-  }
-}
-
-// ===============================
-// ARMAR QUERY STRING DE FILTROS
-// ===============================
-function obtenerQueryFiltros() {
-  const estadoEl = document.getElementById("filtroEstado");
-  const busquedaEl = document.getElementById("busqueda");
-  const inicioEl = document.getElementById("fechaInicio");
-  const finEl = document.getElementById("fechaFin");
-
-  const estado = estadoEl ? estadoEl.value : "";
-  const busqueda = busquedaEl ? busquedaEl.value.trim() : "";
-  const inicio = inicioEl ? inicioEl.value : "";
-  const fin = finEl ? finEl.value : "";
-
-  const params = [];
-
-  if (estado) params.push(`estado=${encodeURIComponent(estado)}`);
-  if (busqueda) params.push(`busqueda=${encodeURIComponent(busqueda)}`);
-  if (inicio) params.push(`inicio=${encodeURIComponent(inicio)}`);
-  if (fin) params.push(`fin=${encodeURIComponent(fin)}`);
-
-  return params.join("&");
-}
-
-// ===============================
-// MARCAR COMO REVISADA
-// ===============================
-async function marcarRevisada(id) {
-  const token = verificarToken();
-  if (!token) return;
-
-  try {
-    const res = await fetch(`${BASE_URL}/reservas/${id}/revisada`, {
-      method: "PUT",
-      headers: {
-        "authorization": "Bearer " + token,
-        "Content-Type": "application/json"
-      }
-    });
-
-    const data = await res.json();
-
-    if (!data.ok) {
-      alert("No se pudo actualizar la reserva");
-      return;
-    }
-
-    cargarReservas(paginaActual);
-
-  } catch (err) {
-    console.error(err);
-    alert("Error conectando con el servidor");
-  }
 }
 
 // ===============================
 // CARGAR RESERVAS
 // ===============================
 async function cargarReservas(page = 1) {
-  const token = verificarToken();
+  const token = obtenerToken();
   if (!token) return;
 
   paginaActual = page;
 
-  const tablaBody = document.querySelector("#tablaReservas tbody");
+  const tbody = document.querySelector("#tablaReservas tbody");
+  tbody.innerHTML = "<tr><td colspan='7'>Cargando...</td></tr>";
 
   try {
-    let url = `${BASE_URL}/reservas?page=${page}&limit=10`;
-
-    const qsFiltros = obtenerQueryFiltros();
-    if (qsFiltros) url += `&${qsFiltros}`;
-
-    const res = await fetch(url, {
-      headers: { "authorization": "Bearer " + token }
-    });
+    const res = await fetch(
+      `${BACKEND_URL}/reservas?page=${page}&limit=10`,
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
 
     const data = await res.json();
 
-    if (!data.ok) {
-      alert("Error obteniendo reservas");
+    if (!res.ok || !data.ok) {
+      throw new Error(data.msg || "Error obteniendo reservas");
+    }
+
+    const reservas = data.data || [];
+
+    // CONTADORES
+    document.getElementById("total").textContent = `Total: ${reservas.length}`;
+    document.getElementById("pendientes").textContent =
+      `Pendientes: ${reservas.filter(r => r.estado === "pendiente").length}`;
+    document.getElementById("revisadas").textContent =
+      `Revisadas: ${reservas.filter(r => r.estado === "revisada").length}`;
+
+    tbody.innerHTML = "";
+
+    if (!reservas.length) {
+      tbody.innerHTML =
+        "<tr><td colspan='7'>No hay reservas</td></tr>";
       return;
     }
 
-    // Ordenar
-    if (Array.isArray(data.data)) {
-      data.data.sort((a, b) => {
-        if (a.estado === b.estado) return 0;
-        if (a.estado === "pendiente") return -1;
-        return 1;
-      });
-    }
-
-    const total = data.data.length;
-    const pendientes = data.data.filter(r => r.estado === "pendiente").length;
-    const revisadas = data.data.filter(r => r.estado === "revisada").length;
-
-    document.getElementById("total").textContent = `Total: ${total}`;
-    document.getElementById("pendientes").textContent = `Pendientes: ${pendientes}`;
-    document.getElementById("revisadas").textContent = `Revisadas: ${revisadas}`;
-
-    totalPaginas = data.totalPages || 1;
-    document.getElementById("infoPagina").textContent =
-      `Página ${data.page} de ${data.totalPages}`;
-
-    tablaBody.innerHTML = "";
-
-    if (!data.data.length) {
-      tablaBody.innerHTML = `<tr><td colspan="7">No hay reservas</td></tr>`;
-      return;
-    }
-
-    data.data.forEach(r => {
-      tablaBody.innerHTML += `
+    reservas.forEach((r) => {
+      tbody.innerHTML += `
         <tr>
           <td>${r.id}</td>
           <td>${r.nombre}</td>
           <td>${r.correo}</td>
           <td>${r.motivo}</td>
-          <td>${r.fecha}</td>
-          <td class="${r.estado === 'revisada' ? 'estado-revisada' : 'estado-pendiente'}">${r.estado}</td>
-          <td>
-            ${r.estado === "revisada"
-              ? "<span class='estado-revisada'>✔ Revisada</span>"
-              : `<button onclick="marcarRevisada(${r.id})">Revisar</button>`}
-            <button onclick="abrirModalEliminar(${r.id})" class="btn-danger">Eliminar</button>
+          <td>${new Date(r.fecha).toLocaleDateString()}</td>
+          <td class="${r.estado === "revisada" ? "estado-revisada" : "estado-pendiente"}">
+            ${r.estado}
           </td>
-        </tr>`;
+          <td>
+            ${
+              r.estado === "pendiente"
+                ? `<button onclick="marcarRevisada(${r.id})">Revisar</button>`
+                : `<span class="estado-revisada">✔</span>`
+            }
+            <button class="btn-danger" onclick="abrirModalEliminar(${r.id})">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      `;
     });
 
   } catch (err) {
     console.error(err);
-    alert("Error conectando con el servidor");
+    tbody.innerHTML =
+      "<tr><td colspan='7'>Error cargando reservas</td></tr>";
   }
 }
 
 // ===============================
-// FILTROS
+// MARCAR COMO REVISADA
 // ===============================
-function aplicarFiltros() { cargarReservas(1); }
-function limpiarFiltros() {
-  document.getElementById("filtroEstado").value = "";
-  document.getElementById("busqueda").value = "";
-  document.getElementById("fechaInicio").value = "";
-  document.getElementById("fechaFin").value = "";
-  cargarReservas(1);
+async function marcarRevisada(id) {
+  const token = obtenerToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch(
+      `${BACKEND_URL}/reservas/${id}/estado`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ estado: "revisada" }),
+      }
+    );
+
+    const data = await res.json();
+    if (!data.ok) throw new Error();
+
+    cargarReservas(paginaActual);
+
+  } catch {
+    alert("No se pudo marcar como revisada");
+  }
 }
 
 // ===============================
-// MODAL ELIMINAR
+// ELIMINAR RESERVA
 // ===============================
 function abrirModalEliminar(id) {
   idReservaAEliminar = id;
@@ -225,66 +143,29 @@ function cerrarModalEliminar() {
 }
 
 async function eliminarReserva() {
-  const token = verificarToken();
+  const token = obtenerToken();
   if (!token || !idReservaAEliminar) return;
 
   try {
-    const res = await fetch(`${BASE_URL}/reservas/${idReservaAEliminar}`, {
-      method: "DELETE",
-      headers: {
-        "authorization": "Bearer " + token,
-        "Content-Type": "application/json"
+    const res = await fetch(
+      `${BACKEND_URL}/reservas/${idReservaAEliminar}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
       }
-    });
+    );
 
     const data = await res.json();
-
-    if (!data.ok) {
-      alert("No se pudo eliminar la reserva");
-      return;
-    }
+    if (!data.ok) throw new Error();
 
     cerrarModalEliminar();
     cargarReservas(paginaActual);
 
-  } catch (err) {
-    console.error(err);
-    alert("Error conectando con el servidor");
+  } catch {
+    alert("Error eliminando reserva");
   }
-}
-
-// ===============================
-// EXPORTAR CSV
-// ===============================
-function exportarExcel() {
-  const tabla = document.getElementById("tablaReservas");
-  let csv = "";
-  const filas = tabla.querySelectorAll("tr");
-
-  filas.forEach(fila => {
-    const celdas = fila.querySelectorAll("th, td");
-    const filaDatos = [];
-
-    celdas.forEach(celda => {
-      const texto = celda.innerText.replace(/"/g, '""');
-      filaDatos.push(`"${texto}"`);
-    });
-
-    csv += filaDatos.join(",") + "\n";
-  });
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-
-  const fechaStr = new Date().toISOString().slice(0, 10);
-
-  a.href = url;
-  a.download = `reservas_el_spot_${fechaStr}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 }
 
 // ===============================
@@ -299,15 +180,25 @@ function paginaSiguiente() {
 }
 
 // ===============================
-// INICIALIZAR
+// LOGOUT
+// ===============================
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.href = "/admin/login.html";
+});
+
+// ===============================
+// INIT
 // ===============================
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("tablaReservas")) cargarReservas();
-  if (document.getElementById("loginForm")) {
-    document.getElementById("loginForm").addEventListener("submit", iniciarLogin);
-  }
+  cargarReservas();
 
-  // Modal listeners
-  document.getElementById("btnCancelarEliminar")?.addEventListener("click", cerrarModalEliminar);
-  document.getElementById("btnConfirmarEliminar")?.addEventListener("click", eliminarReserva);
+  document
+    .getElementById("btnCancelarEliminar")
+    ?.addEventListener("click", cerrarModalEliminar);
+
+  document
+    .getElementById("btnConfirmarEliminar")
+    ?.addEventListener("click", eliminarReserva);
 });
