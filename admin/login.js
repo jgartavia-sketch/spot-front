@@ -1,4 +1,4 @@
-// ESO/admin/login.js
+console.log("LOGIN JS VERSION 2025-OK");
 
 const BACKEND_URL = "https://spot-backend-hdft.onrender.com";
 
@@ -8,7 +8,6 @@ console.log("BACKEND_URL =", BACKEND_URL);
 const form = document.getElementById("loginForm");
 const errorMsg = document.getElementById("errorMsg");
 
-// Si ya hay token, ir al dashboard
 if (localStorage.getItem("token")) {
   window.location.href = "/admin/dashboard.html";
 }
@@ -23,16 +22,14 @@ form.addEventListener("submit", async (e) => {
   try {
     const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
 
     if (!res.ok || !data.ok) {
-      throw new Error(data.msg || "Credenciales incorrectas");
+      throw new Error(data.msg || "Credenciales inválidas");
     }
 
     localStorage.setItem("token", data.token);
