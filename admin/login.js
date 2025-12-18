@@ -1,14 +1,16 @@
-// admin/login.js
+// ESO/admin/login.js
 
 const BACKEND_URL = "https://spot-backend-hdft.onrender.com";
+
+console.log("LOGIN ADMIN CARGADO");
+console.log("BACKEND_URL =", BACKEND_URL);
 
 const form = document.getElementById("loginForm");
 const errorMsg = document.getElementById("errorMsg");
 
-// Si ya existe sesión, ir directo al dashboard
-const token = localStorage.getItem("token");
-if (token) {
-  window.location.href = "dashboard.html";
+// Si ya hay token, ir directo al dashboard
+if (localStorage.getItem("token")) {
+  window.location.href = "/admin/dashboard.html";
 }
 
 form.addEventListener("submit", async (e) => {
@@ -18,25 +20,14 @@ form.addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  if (!email || !password) {
-    errorMsg.textContent = "Todos los campos son obligatorios";
-    return;
-  }
-
   try {
     const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password })
     });
-
-    // Defensa: asegurarse que la respuesta sea JSON
-    const contentType = res.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("Respuesta inválida del servidor");
-    }
 
     const data = await res.json();
 
@@ -44,14 +35,12 @@ form.addEventListener("submit", async (e) => {
       throw new Error(data.msg || "Credenciales incorrectas");
     }
 
-    // Guardar sesión
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
 
-    // Redirigir al dashboard
-    window.location.href = "dashboard.html";
+    window.location.href = "/admin/dashboard.html";
 
   } catch (err) {
-    errorMsg.textContent = err.message || "Error conectando al servidor";
+    errorMsg.textContent = err.message;
   }
 });
