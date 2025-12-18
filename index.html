@@ -5,153 +5,801 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>El Spot Orgánico</title>
   <link rel="stylesheet" href="style.css" />
-
-  <style>
-    /* ===== CARRITO LATERAL ===== */
-    .cart-panel {
-      position: fixed;
-      top: 0;
-      left: -360px;
-      width: 360px;
-      height: 100%;
-      background: #ffffff;
-      box-shadow: 4px 0 12px rgba(0,0,0,0.15);
-      padding: 20px;
-      transition: left 0.3s ease;
-      z-index: 9999;
-      overflow-y: auto;
-    }
-
-    .cart-panel.open {
-      left: 0;
-    }
-
-    .cart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .cart-item {
-      border-bottom: 1px solid #ddd;
-      padding: 10px 0;
-    }
-
-    .cart-item button {
-      background: none;
-      border: none;
-      color: #c0392b;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .cart-footer {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    .cart-close {
-      cursor: pointer;
-      font-size: 18px;
-    }
-  </style>
 </head>
-
 <body>
 
-<!-- ===== CARRITO ===== -->
-<aside id="cartPanel" class="cart-panel">
-  <div class="cart-header">
-    <h3>🛒 Tu carrito</h3>
-    <span class="cart-close" onclick="toggleCart()">✕</span>
-  </div>
+  <!-- OVERLAY + CARRITO (panel izquierdo) -->
+  <div id="cartOverlay" class="cart-overlay" aria-hidden="true"></div>
 
-  <div id="cartItems"></div>
+  <aside id="cartDrawer" class="cart-drawer" aria-hidden="true">
+    <div class="cart-header">
+      <h3>Tu Carrito</h3>
+      <button id="cartCloseBtn" class="btn-outline small" type="button" aria-label="Cerrar carrito">Cerrar</button>
+    </div>
 
-  <div class="cart-footer">
-    Total: ₡<span id="cartTotal">0</span>
-    <br><br>
-    <button class="btn" style="width:100%">Finalizar compra</button>
-  </div>
-</aside>
+    <div id="cartItems" class="cart-items">
+      <p class="cart-empty" style="opacity:.7">Tu carrito está vacío.</p>
+    </div>
 
-<!-- NAVBAR -->
-<header class="navbar">
-  <h1 class="logo">El Spot Orgánico</h1>
-</header>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cartTotal">₡0</strong>
+      </div>
+      <button id="cartClearBtn" class="btn-outline" type="button">Vaciar carrito</button>
+      <button id="cartCheckoutBtn" class="btn" type="button">Finalizar compra</button>
+      <small style="opacity:.65;display:block;margin-top:10px;">
+        *Checkout real lo conectamos en el backend (órdenes/ventas).
+      </small>
+    </div>
+  </aside>
 
-<!-- PRODUCTOS -->
-<section id="productos" class="section">
-  <h2>Productos</h2>
-  <p>Plantas, abonos, macetas y más.</p>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <h1 class="logo">El Spot Orgánico</h1>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#camping">Camping</a></li>
+        <li><a href="#tours">Tours</a></li>
+        <li><a href="#productos">Productos</a></li>
+        <li><a href="#academy">ESO Academy</a></li>
+        <li><a href="#galeria">Galería</a></li>
+        <li><a href="#contacto">Contacto</a></li>
 
-  <div class="productos-grid">
+        <!-- CTA Carrito -->
+        <li>
+          <button id="cartOpenBtn" type="button" class="btn-outline small" aria-label="Abrir carrito">
+            🛒 Carrito <span id="cartCount" style="font-weight:700;">0</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-    <article class="prod-card">
-      <h3>Plantas ornamentales</h3>
-      <button class="btn comprar-btn" data-producto="Plantas ornamentales" data-precio="3500">Comprar</button>
-    </article>
-
-    <article class="prod-card">
-      <h3>Sustratos & Abonos</h3>
-      <button class="btn comprar-btn" data-producto="Sustratos & Abonos" data-precio="4200">Comprar</button>
-    </article>
-
-    <article class="prod-card">
-      <h3>Kits de jardinería</h3>
-      <button class="btn comprar-btn" data-producto="Kits de jardinería" data-precio="6500">Comprar</button>
-    </article>
-
-  </div>
-</section>
-
-<script>
-  /* ===== LÓGICA DE TIENDA ===== */
-  let carrito = [];
-
-  function toggleCart() {
-    document.getElementById("cartPanel").classList.toggle("open");
-  }
-
-  function renderCart() {
-    const contenedor = document.getElementById("cartItems");
-    const totalEl = document.getElementById("cartTotal");
-    contenedor.innerHTML = "";
-
-    let total = 0;
-
-    carrito.forEach((item, index) => {
-      total += item.precio;
-      contenedor.innerHTML += `
-        <div class="cart-item">
-          <strong>${item.nombre}</strong><br>
-          ₡${item.precio}
-          <br>
-          <button onclick="removeItem(${index})">Eliminar</button>
+  <!-- HERO -->
+  <section id="inicio" class="hero hero-camping">
+    <div class="hero-overlay">
+      <div class="hero-text">
+        <h2>Vení a dormir bajo las estrellas</h2>
+        <p>Camping sustentable, experiencias guiadas y conexión real con la comunidad.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#camping">Reservar Camping</a>
+          <a class="btn btn-secondary" href="#tours">Ver Tours</a>
         </div>
-      `;
-    });
+      </div>
+    </div>
+  </section>
 
-    totalEl.textContent = total;
-  }
+  <!-- CAMPING -->
+  <section id="camping" class="section feature-section">
+    <h2>Camping — Experiencia Principal</h2>
+    <p>Vení a vivir una noche única: fogata, senderos guiados y desayuno con productos locales.</p>
 
-  function removeItem(index) {
-    carrito.splice(index, 1);
-    renderCart();
-  }
+    <div class="feature-grid">
+      <article class="feature-card fade-up">
+        <div class="feature-media">
+          <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1200&q=80" alt="Camping noche">
+        </div>
+        <div class="feature-body">
+          <h3>Camping Nocturno</h3>
+          <p>Zona segura, baños ecológicos y puntos para fogata.</p>
+          <div class="feature-meta">Desde ₡8,000 / noche</div>
+          <a class="btn" href="#contacto">Reservar</a>
+        </div>
+      </article>
 
-  document.querySelectorAll(".comprar-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const producto = btn.dataset.producto;
-      const precio = Number(btn.dataset.precio);
+      <article class="feature-card fade-up">
+        <div class="feature-media">
+          <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?w=1200&q=80" alt="Campamento con vista">
+        </div>
+        <div class="feature-body">
+          <h3>Camping Eco-Comfort</h3>
+          <p>Glamping ligero: colchonetas, kit desayuno y guía nocturna.</p>
+          <div class="feature-meta">Desde ₡12,000 / noche</div>
+          <a class="btn" href="#contacto">Reservar</a>
+        </div>
+      </article>
 
-      carrito.push({ nombre: producto, precio });
-      renderCart();
-      toggleCart();
-    });
-  });
-</script>
+      <article class="feature-card fade-up">
+        <div class="feature-media">
+          <img src="https://images.unsplash.com/photo-1526779259212-39e2f3f9b8bf?w=1200&q=80" alt="Desayuno local">
+        </div>
+        <div class="feature-body">
+          <h3>Experiencia Completa</h3>
+          <p>Noche, tour educativo al amanecer y desayuno local.</p>
+          <div class="feature-meta">Paquete desde ₡18,000</div>
+          <a class="btn" href="#contacto">Reservar Paquete</a>
+        </div>
+      </article>
+    </div>
+  </section>
 
+  <!-- TOURS -->
+  <section id="tours" class="section">
+    <h2>Tours Educativos</h2>
+    <p>Recorridos dentro y fuera de la propiedad.</p>
+
+    <div class="productos-grid">
+      <article class="prod-card fade-up">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=80" alt="Tour sendero">
+        </div>
+        <div class="card-body">
+          <h3>Tour Sendero Educativo</h3>
+          <p>1.5h de recorrido con guía local.</p>
+          <div class="card-actions">
+            <a class="btn-outline" href="#tours">Ver</a>
+            <a class="btn" href="#contacto">Reservar</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80" alt="Tour externo">
+        </div>
+        <div class="card-body">
+          <h3>Tour Externo (Comunidad)</h3>
+          <p>Impacto real en la economía del pueblo.</p>
+          <div class="card-actions">
+            <a class="btn-outline" href="#tours">Ver</a>
+            <a class="btn" href="#contacto">Reservar</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS (Tienda) -->
+  <section id="productos" class="section">
+    <h2>Tienda</h2>
+    <p>Catálogo con categorías. Agregá al carrito sin perder de vista lo que estás viendo.</p>
+
+    <!-- Categorías -->
+    <div class="shop-toolbar">
+      <div class="shop-categories">
+        <button type="button" class="btn-outline small cat-btn active" data-cat="all">Todo</button>
+        <button type="button" class="btn-outline small cat-btn" data-cat="Abonos">Abonos</button>
+        <button type="button" class="btn-outline small cat-btn" data-cat="Insecticidas">Insecticidas</button>
+        <button type="button" class="btn-outline small cat-btn" data-cat="Macetas">Macetas</button>
+        <button type="button" class="btn-outline small cat-btn" data-cat="Semillas">Semillas</button>
+        <button type="button" class="btn-outline small cat-btn" data-cat="Herramientas">Herramientas</button>
+      </div>
+
+      <div class="shop-search">
+        <input id="shopSearch" type="search" placeholder="Buscar producto..." aria-label="Buscar producto" />
+      </div>
+    </div>
+
+    <!-- Grid productos -->
+    <div class="productos-grid" id="productsGrid">
+
+      <!-- ABONOS (6) -->
+      <article class="prod-card fade-up" data-cat="Abonos">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1457530378978-8bac673b8062?w=800&q=80" alt="Compost Orgánico Premium">
+        </div>
+        <div class="card-body">
+          <h3>Compost Orgánico Premium</h3>
+          <p>Mejora suelo y retención de humedad.</p>
+          <div class="feature-meta">₡3,500</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="A01" data-nombre="Compost Orgánico Premium" data-precio="3500" data-cat="Abonos">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Abonos">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=800&q=80" alt="Humus de Lombriz 2kg">
+        </div>
+        <div class="card-body">
+          <h3>Humus de Lombriz 2kg</h3>
+          <p>Nutrientes suaves, raíces felices.</p>
+          <div class="feature-meta">₡4,200</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="A02" data-nombre="Humus de Lombriz 2kg" data-precio="4200" data-cat="Abonos">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Abonos">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1598514983318-2f64f8c7e8b5?w=800&q=80" alt="Bocashi Artesanal 3kg">
+        </div>
+        <div class="card-body">
+          <h3>Bocashi Artesanal 3kg</h3>
+          <p>Activador biológico para tus plantas.</p>
+          <div class="feature-meta">₡3,900</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="A03" data-nombre="Bocashi Artesanal 3kg" data-precio="3900" data-cat="Abonos">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Abonos">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1582515073490-39981397c445?w=800&q=80" alt="Fertilizante Foliar Orgánico">
+        </div>
+        <div class="card-body">
+          <h3>Fertilizante Foliar Orgánico</h3>
+          <p>Verde intenso, crecimiento parejo.</p>
+          <div class="feature-meta">₡5,500</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="A04" data-nombre="Fertilizante Foliar Orgánico" data-precio="5500" data-cat="Abonos">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Abonos">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1595262894415-70f80f6b4e6f?w=800&q=80" alt="Cal Dolomita 1kg">
+        </div>
+        <div class="card-body">
+          <h3>Cal Dolomita 1kg</h3>
+          <p>Balancea pH, fortalece estructura.</p>
+          <div class="feature-meta">₡2,400</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="A05" data-nombre="Cal Dolomita 1kg" data-precio="2400" data-cat="Abonos">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Abonos">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1610632380989-680fe40816c6?w=800&q=80" alt="Té de Compost Concentrado">
+        </div>
+        <div class="card-body">
+          <h3>Té de Compost Concentrado</h3>
+          <p>Microbiología viva para el suelo.</p>
+          <div class="feature-meta">₡4,800</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="A06" data-nombre="Té de Compost Concentrado" data-precio="4800" data-cat="Abonos">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- INSECTICIDAS (6) -->
+      <article class="prod-card fade-up" data-cat="Insecticidas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1615486511484-92e172aff8a1?w=800&q=80" alt="Jabón Potásico 500ml">
+        </div>
+        <div class="card-body">
+          <h3>Jabón Potásico 500ml</h3>
+          <p>Control suave para plagas comunes.</p>
+          <div class="feature-meta">₡3,200</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="I01" data-nombre="Jabón Potásico 500ml" data-precio="3200" data-cat="Insecticidas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Insecticidas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1621972750749-0fbb1a14b66a?w=800&q=80" alt="Aceite de Neem 250ml">
+        </div>
+        <div class="card-body">
+          <h3>Aceite de Neem 250ml</h3>
+          <p>Repelente natural, uso doméstico.</p>
+          <div class="feature-meta">₡4,900</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="I02" data-nombre="Aceite de Neem 250ml" data-precio="4900" data-cat="Insecticidas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Insecticidas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80" alt="Trampa Amarilla (Pack 10)">
+        </div>
+        <div class="card-body">
+          <h3>Trampa Amarilla (Pack 10)</h3>
+          <p>Monitoreo y control de mosca blanca.</p>
+          <div class="feature-meta">₡2,800</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="I03" data-nombre="Trampa Amarilla (Pack 10)" data-precio="2800" data-cat="Insecticidas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Insecticidas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=800&q=80" alt="Extracto de Ajo y Chile">
+        </div>
+        <div class="card-body">
+          <h3>Extracto de Ajo y Chile</h3>
+          <p>Repelente casero mejorado.</p>
+          <div class="feature-meta">₡3,700</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="I04" data-nombre="Extracto de Ajo y Chile" data-precio="3700" data-cat="Insecticidas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Insecticidas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1615486511685-9c9777084d8f?w=800&q=80" alt="Bacillus thuringiensis (BT)">
+        </div>
+        <div class="card-body">
+          <h3>Bacillus thuringiensis (BT)</h3>
+          <p>Control biológico para orugas.</p>
+          <div class="feature-meta">₡6,200</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="I05" data-nombre="Bacillus thuringiensis (BT)" data-precio="6200" data-cat="Insecticidas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Insecticidas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=800&q=80" alt="Tierra de Diatomeas 1kg">
+        </div>
+        <div class="card-body">
+          <h3>Tierra de Diatomeas 1kg</h3>
+          <p>Uso seco, apoyo contra plagas.</p>
+          <div class="feature-meta">₡5,900</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="I06" data-nombre="Tierra de Diatomeas 1kg" data-precio="5900" data-cat="Insecticidas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- MACETAS (6) -->
+      <article class="prod-card fade-up" data-cat="Macetas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1457530378978-8bac673b8062?w=800&q=80" alt="Maceta Terracota #12">
+        </div>
+        <div class="card-body">
+          <h3>Maceta Terracota #12</h3>
+          <p>Clásica, respira bien, elegante.</p>
+          <div class="feature-meta">₡2,100</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="M01" data-nombre="Maceta Terracota #12" data-precio="2100" data-cat="Macetas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Macetas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=800&q=80" alt="Maceta Plástica Negra #10">
+        </div>
+        <div class="card-body">
+          <h3>Maceta Plástica Negra #10</h3>
+          <p>Resistente, liviana, básica PRO.</p>
+          <div class="feature-meta">₡1,200</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="M02" data-nombre="Maceta Plástica Negra #10" data-precio="1200" data-cat="Macetas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Macetas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1461354464878-ad92f492a5a0?w=800&q=80" alt="Maceta Colgante">
+        </div>
+        <div class="card-body">
+          <h3>Maceta Colgante</h3>
+          <p>Ideal para helechos y ornamentales.</p>
+          <div class="feature-meta">₡2,900</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="M03" data-nombre="Maceta Colgante" data-precio="2900" data-cat="Macetas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Macetas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=800&q=80" alt="Maceta Cerámica Blanca">
+        </div>
+        <div class="card-body">
+          <h3>Maceta Cerámica Blanca</h3>
+          <p>Minimalista, para interiores.</p>
+          <div class="feature-meta">₡5,800</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="M04" data-nombre="Maceta Cerámica Blanca" data-precio="5800" data-cat="Macetas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Macetas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=800&q=80" alt="Bandeja Germinadora 50 celdas">
+        </div>
+        <div class="card-body">
+          <h3>Bandeja Germinadora 50 celdas</h3>
+          <p>Arranque perfecto para almácigos.</p>
+          <div class="feature-meta">₡3,300</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="M05" data-nombre="Bandeja Germinadora 50 celdas" data-precio="3300" data-cat="Macetas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Macetas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800&q=80" alt="Plato para maceta #12">
+        </div>
+        <div class="card-body">
+          <h3>Plato para maceta #12</h3>
+          <p>Evita derrames, protege superficies.</p>
+          <div class="feature-meta">₡900</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="M06" data-nombre="Plato para maceta #12" data-precio="900" data-cat="Macetas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- SEMILLAS (6) -->
+      <article class="prod-card fade-up" data-cat="Semillas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=800&q=80" alt="Semillas Albahaca">
+        </div>
+        <div class="card-body">
+          <h3>Semillas de Albahaca</h3>
+          <p>Aromática, fácil, perfecta para cocina.</p>
+          <div class="feature-meta">₡1,100</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="S01" data-nombre="Semillas de Albahaca" data-precio="1100" data-cat="Semillas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Semillas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80" alt="Semillas Culantro Coyote">
+        </div>
+        <div class="card-body">
+          <h3>Semillas Culantro Coyote</h3>
+          <p>Fuerte, rendidor, sabor tico.</p>
+          <div class="feature-meta">₡1,300</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="S02" data-nombre="Semillas Culantro Coyote" data-precio="1300" data-cat="Semillas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Semillas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1598514983318-2f64f8c7e8b5?w=800&q=80" alt="Semillas Tomate Cherry">
+        </div>
+        <div class="card-body">
+          <h3>Semillas Tomate Cherry</h3>
+          <p>Dulce y productivo.</p>
+          <div class="feature-meta">₡1,400</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="S03" data-nombre="Semillas Tomate Cherry" data-precio="1400" data-cat="Semillas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Semillas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=800&q=80" alt="Semillas Lechuga Romana">
+        </div>
+        <div class="card-body">
+          <h3>Semillas Lechuga Romana</h3>
+          <p>Cosecha rápida, crujiente.</p>
+          <div class="feature-meta">₡1,250</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="S04" data-nombre="Semillas Lechuga Romana" data-precio="1250" data-cat="Semillas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Semillas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1582515073490-39981397c445?w=800&q=80" alt="Semillas Chile Dulce">
+        </div>
+        <div class="card-body">
+          <h3>Semillas Chile Dulce</h3>
+          <p>Clásico para huerto tico.</p>
+          <div class="feature-meta">₡1,350</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="S05" data-nombre="Semillas Chile Dulce" data-precio="1350" data-cat="Semillas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Semillas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1610632380989-680fe40816c6?w=800&q=80" alt="Semillas Zanahoria">
+        </div>
+        <div class="card-body">
+          <h3>Semillas Zanahoria</h3>
+          <p>Dulce, resistente, rendidora.</p>
+          <div class="feature-meta">₡1,200</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="S06" data-nombre="Semillas Zanahoria" data-precio="1200" data-cat="Semillas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- HERRAMIENTAS (6) -->
+      <article class="prod-card fade-up" data-cat="Herramientas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80" alt="Pala de mano">
+        </div>
+        <div class="card-body">
+          <h3>Pala de mano</h3>
+          <p>Ideal para trasplantes y macetas.</p>
+          <div class="feature-meta">₡2,000</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="H01" data-nombre="Pala de mano" data-precio="2000" data-cat="Herramientas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Herramientas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=800&q=80" alt="Tijera de poda">
+        </div>
+        <div class="card-body">
+          <h3>Tijera de poda</h3>
+          <p>Corte limpio, manejo cómodo.</p>
+          <div class="feature-meta">₡4,500</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="H02" data-nombre="Tijera de poda" data-precio="4500" data-cat="Herramientas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Herramientas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80" alt="Guantes de jardinería">
+        </div>
+        <div class="card-body">
+          <h3>Guantes de jardinería</h3>
+          <p>Protección y agarre.</p>
+          <div class="feature-meta">₡2,300</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="H03" data-nombre="Guantes de jardinería" data-precio="2300" data-cat="Herramientas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Herramientas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=80" alt="Regadera 2L">
+        </div>
+        <div class="card-body">
+          <h3>Regadera 2L</h3>
+          <p>Riego suave para almácigos.</p>
+          <div class="feature-meta">₡3,800</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="H04" data-nombre="Regadera 2L" data-precio="3800" data-cat="Herramientas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Herramientas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80" alt="Pulverizador 1L">
+        </div>
+        <div class="card-body">
+          <h3>Pulverizador 1L</h3>
+          <p>Para foliares y bioinsumos.</p>
+          <div class="feature-meta">₡3,200</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="H05" data-nombre="Pulverizador 1L" data-precio="3200" data-cat="Herramientas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="prod-card fade-up" data-cat="Herramientas">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800&q=80" alt="Kit básico de jardinería">
+        </div>
+        <div class="card-body">
+          <h3>Kit básico de jardinería</h3>
+          <p>Set para empezar rápido.</p>
+          <div class="feature-meta">₡7,900</div>
+          <div class="card-actions">
+            <button class="btn-outline small" type="button">Ver</button>
+            <button class="btn add-to-cart" type="button"
+              data-id="H06" data-nombre="Kit básico de jardinería" data-precio="7900" data-cat="Herramientas">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ESO ACADEMY -->
+  <section id="academy" class="section academy-section" data-feature="disabled">
+    <h2>ESO Academy</h2>
+    <p>Aprendé sobre sostenibilidad.</p>
+
+    <div class="academy-grid">
+      <article class="academy-card fade-up">
+        <h3>Cómo preparar sustrato orgánico</h3>
+        <p>Guía rápida para un sustrato nutritivo.</p>
+        <a class="btn-outline small" href="#academy">Leer más</a>
+      </article>
+
+      <article class="academy-card fade-up">
+        <h3>Riego responsable</h3>
+        <p>Técnicas para ahorrar agua.</p>
+        <a class="btn-outline small" href="#academy">Leer más</a>
+      </article>
+
+      <article class="academy-card fade-up">
+        <h3>Plagas y soluciones naturales</h3>
+        <p>Métodos ecológicos para proteger tus plantas.</p>
+        <a class="btn-outline small" href="#academy">Leer más</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- GALERÍA -->
+  <section id="galeria" class="section">
+    <h2>Galería</h2>
+    <div class="masonry-grid">
+      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=900&q=80"></div>
+      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&q=80"></div>
+      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=900&q=80"></div>
+      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=900&q=80"></div>
+      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&q=80"></div>
+      <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=900&q=80"></div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="section">
+    <h2>Contacto y Reservas</h2>
+    <p>Escribinos para reservar camping, tours o pedir información.</p>
+
+    <form class="contact-form" id="contact-form">
+      <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+      <input type="email" id="correo" name="correo" placeholder="Tu correo" required>
+      <input type="tel" id="telefono" name="telefono" placeholder="Tu teléfono (opcional)">
+
+      <select id="motivo" name="motivo" required>
+        <option value="">Seleccionar...</option>
+        <option value="info">Solicitar información</option>
+        <option value="camping">Reservar Camping</option>
+        <option value="tour">Reservar Tour</option>
+        <option value="producto">Comprar producto</option>
+      </select>
+
+      <label style="margin-top:5px;font-weight:600;color:#1a6e32;">Fecha de la reserva *</label>
+      <input type="date" id="fecha" name="fecha" required>
+
+      <textarea id="mensaje" placeholder="Tu mensaje"></textarea>
+      <button type="submit" class="btn">Enviar</button>
+    </form>
+
+    <p id="mensaje-exito" class="mensaje-exito" style="display:none;">Reserva enviada con éxito</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="brand">
+        <h3>El Spot Orgánico</h3>
+        <p>Naturaleza, educación y turismo sostenible.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
