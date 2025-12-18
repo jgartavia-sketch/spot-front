@@ -8,7 +8,7 @@ console.log("BACKEND_URL =", BACKEND_URL);
 const form = document.getElementById("loginForm");
 const errorMsg = document.getElementById("errorMsg");
 
-// Si ya hay token, ir directo al dashboard
+// Si ya hay token, ir al dashboard
 if (localStorage.getItem("token")) {
   window.location.href = "/admin/dashboard.html";
 }
