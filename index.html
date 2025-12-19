@@ -723,8 +723,8 @@
     </div>
   </section>
 
-  <!-- ESO ACADEMY -->
-  <section id="academy" class="section academy-section" data-feature="disabled">
+  <!-- ESO ACADEMY (OCULTO POR REGLA DEL PROYECTO) -->
+  <section id="academy" class="section academy-section" data-feature="disabled" style="display:none;">
     <h2>ESO Academy</h2>
     <p>Aprendé sobre sostenibilidad.</p>
 
@@ -752,6 +752,7 @@
   <!-- GALERÍA -->
   <section id="galeria" class="section">
     <h2>Galería</h2>
+
     <div class="masonry-grid">
       <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=900&q=80"></div>
       <div class="masonry-item fade-up"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=900&q=80"></div>
@@ -767,27 +768,53 @@
     <h2>Contacto y Reservas</h2>
     <p>Escribinos para reservar camping, tours o pedir información.</p>
 
+    <!-- FORMULARIO CORREGIDO -->
     <form class="contact-form" id="contact-form">
       <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
       <input type="email" id="correo" name="correo" placeholder="Tu correo" required>
       <input type="tel" id="telefono" name="telefono" placeholder="Tu teléfono (opcional)">
 
       <select id="motivo" name="motivo" required>
-        <option value="">Seleccionar...</option>
+        <option value="">Seleccionar.</option>
         <option value="info">Solicitar información</option>
         <option value="camping">Reservar Camping</option>
         <option value="tour">Reservar Tour</option>
         <option value="producto">Comprar producto</option>
       </select>
 
+      <!-- FECHA OBLIGATORIA -->
       <label style="margin-top:5px;font-weight:600;color:#1a6e32;">Fecha de la reserva *</label>
       <input type="date" id="fecha" name="fecha" required>
 
+      <div id="campingFields" style="display:none;">
+        <h4>Datos Camping</h4>
+        <input type="date" id="campingEntrada">
+        <input type="date" id="campingSalida">
+        <input type="number" id="campingPersonas" min="1" placeholder="Personas">
+      </div>
+
+      <div id="tourFields" style="display:none;">
+        <h4>Datos Tour</h4>
+        <input type="date" id="tourFecha">
+        <input type="number" id="tourPersonas" min="1" placeholder="Personas">
+      </div>
+
       <textarea id="mensaje" placeholder="Tu mensaje"></textarea>
+
       <button type="submit" class="btn">Enviar</button>
     </form>
 
-    <p id="mensaje-exito" class="mensaje-exito" style="display:none;">Reserva enviada con éxito</p>
+    <p id="mensaje-exito" class="mensaje-exito" style="
+      margin-top:15px;
+      padding:10px 15px;
+      background:#e0ffe6;
+      border:1px solid #30a04a;
+      color:#066022;
+      border-radius:6px;
+      font-weight:600;
+      display:none;">Reserva enviada con éxito</p>
+
+    <p class="whatsapp">También podés escribirnos por WhatsApp al <strong>+506 62964881</strong>.</p>
   </section>
 
   <!-- FOOTER -->
@@ -797,9 +824,29 @@
         <h3>El Spot Orgánico</h3>
         <p>Naturaleza, educación y turismo sostenible.</p>
       </div>
+
+      <div class="footer-links">
+        <h4>Contacto</h4>
+        <p>Tel: +506 62964881</p>
+        <p>Email: info@elspotorganico.cr</p>
+      </div>
+
+      <div class="social">
+        <h4>Síguenos</h4>
+        <div class="social-icons">
+          <a href="https://www.instagram.com" target="_blank" aria-label="Instagram">IG</a>
+          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook">FB</a>
+          <a href="https://wa.me/50662964881" target="_blank" aria-label="WhatsApp">WA</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <small>© <span id="year"></span> El Spot Orgánico — Hecho con cariño en el pueblo.</small>
     </div>
   </footer>
 
   <script src="script.js" defer></script>
+
 </body>
 </html>
