@@ -14,7 +14,7 @@
   <aside id="cartDrawer" class="cart-drawer" aria-hidden="true">
     <div class="cart-header">
       <h3>Tu Carrito</h3>
-      <button id="cartCloseBtn" class="btn-outline small" type="button" aria-label="Cerrar carrito">Cerrar</button>
+      <button id="cartCloseBtn" class="btn-outline small" type="button">Cerrar</button>
     </div>
 
     <div id="cartItems" class="cart-items">
@@ -28,9 +28,6 @@
       </div>
       <button id="cartClearBtn" class="btn-outline" type="button">Vaciar carrito</button>
       <button id="cartCheckoutBtn" class="btn" type="button">Finalizar compra</button>
-      <small style="opacity:.65;display:block;margin-top:10px;">
-        *Checkout real lo conectamos en el backend (órdenes/ventas).
-      </small>
     </div>
   </aside>
 
@@ -43,13 +40,11 @@
         <li><a href="#camping">Camping</a></li>
         <li><a href="#tours">Tours</a></li>
         <li><a href="#productos">Productos</a></li>
-        <li><a href="#academy">ESO Academy</a></li>
         <li><a href="#galeria">Galería</a></li>
         <li><a href="#contacto">Contacto</a></li>
 
-        <!-- CTA Carrito -->
         <li>
-          <button id="cartOpenBtn" type="button" class="btn-outline small" aria-label="Abrir carrito">
+          <button id="cartOpenBtn" type="button" class="btn-outline small">
             🛒 Carrito <span id="cartCount" style="font-weight:700;">0</span>
           </button>
         </li>
@@ -71,6 +66,55 @@
     </div>
   </section>
 
+  <!-- CAMPING -->
+  <section id="camping" class="section feature-section">
+    <h2>Camping — Experiencia Principal</h2>
+    <p>Vení a vivir una noche única: fogata, senderos guiados y desayuno con productos locales.</p>
+
+    <div class="feature-grid">
+      <article class="feature-card fade-up">
+        <div class="feature-media">
+          <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1200&q=80"
+               alt="Camping noche"
+               style="height:180px;object-fit:cover;">
+        </div>
+        <div class="feature-body">
+          <h3>Camping Nocturno</h3>
+          <p>Zona segura, baños ecológicos y puntos para fogata.</p>
+          <div class="feature-meta">Desde ₡8,000 / noche</div>
+          <a class="btn" href="#contacto">Reservar</a>
+        </div>
+      </article>
+
+      <article class="feature-card fade-up">
+        <div class="feature-media">
+          <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?w=1200&q=80"
+               alt="Campamento con vista"
+               style="height:180px;object-fit:cover;">
+        </div>
+        <div class="feature-body">
+          <h3>Camping Eco-Comfort</h3>
+          <p>Glamping ligero: colchonetas, kit desayuno y guía nocturna.</p>
+          <div class="feature-meta">Desde ₡12,000 / noche</div>
+          <a class="btn" href="#contacto">Reservar</a>
+        </div>
+      </article>
+
+      <article class="feature-card fade-up">
+        <div class="feature-media">
+          <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=1200&q=80"
+               alt="Desayuno local"
+               style="height:180px;object-fit:cover;">
+        </div>
+        <div class="feature-body">
+          <h3>Experiencia Completa</h3>
+          <p>Noche, tour educativo al amanecer y desayuno local.</p>
+          <div class="feature-meta">Paquete desde ₡18,000</div>
+          <a class="btn" href="#contacto">Reservar Paquete</a>
+        </div>
+      </article>
+    </div>
+  </section>
   <!-- CAMPING -->
   <section id="camping" class="section feature-section">
     <h2>Camping — Experiencia Principal</h2>
